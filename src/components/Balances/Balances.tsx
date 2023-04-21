@@ -1,4 +1,5 @@
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Button from "components/Button";
 import IconButton from "components/IconButton";
 import Section from "components/Section";
 import useAccount from "hooks/AccountProvider";
@@ -150,6 +151,11 @@ const Balances = () => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-end">
+        <Button className="bg-slate-500 button" onClick={addAccount}>
+          Add Account
+        </Button>
+      </div>
     </Section>
   );
 };
