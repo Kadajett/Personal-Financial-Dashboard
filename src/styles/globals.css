@@ -25,3 +25,21 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+@keyframes rainbow {
+  0%, 100% { color: #FF5733; } /* Orange */
+  10% { color: #FF8F33; } /* Light Orange */
+  20% { color: #4FFF33; } /* Lime */
+  30% { color: #99FF33; } /* Light Lime */
+  40% { color: #33D4FF; } /* Light Blue */
+  50% { color: #338CFF; } /* Blue */
+  60% { color: #FF33F6; } /* Magenta */
+  70% { color: #FF33A8; } /* Light Magenta */
+  80% { color: #FFB533; } /* Gold */
+  90% { color: #FF8533; } /* Light Gold */
+}
+
+.rainbow-text:hover {
+  animation: rainbow 2s linear infinite;
+  transform: translateZ(0);
+}
