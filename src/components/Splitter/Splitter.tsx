@@ -1,6 +1,7 @@
 import Section from "components/Section";
 import useIncome from "hooks/IncomeProvider";
 import { useEffect, useState } from "react";
+import { formatter } from "utils/numberFormatter";
 
 const essentialsPercentage = 0.5;
 const wantsPercentage = 0.3;
@@ -104,8 +105,8 @@ const Splitter = () => {
         className="flex flex-col md:grid md:grid-cols-2 md:gap-4"
         onClick={handleClickChangeIncome}
       >
-        <div className="flex flex-col items-center cursor-pointer">
-          Paycheck Ammount: ${income}
+        <div className="flex flex-col ml-10 items-center cursor-pointer whitespace-nowrap">
+          Paycheck Amount: {formatter.format(income)}
         </div>
       </div>
 
@@ -122,7 +123,13 @@ const Splitter = () => {
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-slate-200"
             >
-              Ammount
+              Amount
+            </th>
+            <th
+              scope="col"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-slate-200"
+            >
+              Monthly
             </th>
           </tr>
         </thead>
@@ -132,7 +139,10 @@ const Splitter = () => {
               Essentials
             </td>
             <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
-              ${essentials.toFixed(2)}
+              {formatter.format(essentials)}
+            </td>
+            <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
+              {formatter.format(essentials * 2)}
             </td>
           </tr>
           <tr>
@@ -140,7 +150,7 @@ const Splitter = () => {
               Wants
             </td>
             <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
-              ${wants.toFixed(2)}
+              {formatter.format(wants)}
             </td>
           </tr>
           <tr>
@@ -148,7 +158,7 @@ const Splitter = () => {
               Savings
             </td>
             <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
-              ${savings.toFixed(2)}
+              {formatter.format(savings)}
             </td>
           </tr>
         </tbody>

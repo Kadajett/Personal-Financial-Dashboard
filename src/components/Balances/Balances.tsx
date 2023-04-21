@@ -4,6 +4,7 @@ import IconButton from "components/IconButton";
 import Section from "components/Section";
 import useAccount from "hooks/AccountProvider";
 import type account from "types/accountType";
+import { formatter } from "utils/numberFormatter";
 
 const Balances = () => {
   const { accounts, setAccounts, minimumBalance, setMinimumBalance } =
@@ -87,7 +88,7 @@ const Balances = () => {
         `}
         onClick={clickMinimumBalance}
       >
-        Minimum Balance: ${minimumBalance}
+        Minimum Balance: {formatter.format(minimumBalance)}
         <span
           className={` p-0 ${
             getDifferenceTotalFromMinimumBalance() < 0
@@ -96,7 +97,7 @@ const Balances = () => {
           }`}
         >
           {getDifferenceTotalFromMinimumBalance() > 0 ? "+" : ""}
-          {getDifferenceTotalFromMinimumBalance().toFixed(2)}
+          {formatter.format(getDifferenceTotalFromMinimumBalance())}
         </span>
         to spend
       </div>
@@ -131,7 +132,7 @@ const Balances = () => {
               </td>
 
               <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-100">
-                {account.currentBalance}
+                {formatter.format(account.currentBalance)}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm">
                 <IconButton
