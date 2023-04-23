@@ -7,19 +7,29 @@ import useAccount from "hooks/AccountProvider";
 import useIncome from "hooks/IncomeProvider";
 import { useEffect, useState } from "react";
 import { formatter } from "utils/numberFormatter";
+import SplitterModal from "./SplitEditModal";
 
 const essentialsPercentage = 0.5;
 const wantsPercentage = 0.3;
 const savingsPercentage = 0.2;
 
-function calculateBalance(input: number): {
+function calculateBalance(
+  input: number,
+  riskFactor: number
+): {
   essentials: number;
   wants: number;
   savings: number;
 } {
+  // Adjust the percentages based on the risk factor
+  const adjustedWantsPercentage =
+    wantsPercentage - wantsPercentage * riskFactor;
+  const adjustedSavingsPercentage =
+    savingsPercentage + wantsPercentage * riskFactor;
+
   const essentials = input * essentialsPercentage;
-  const wants = input * wantsPercentage;
-  const savings = input * savingsPercentage;
+  const wants = input * adjustedWantsPercentage;
+  const savings = input * adjustedSavingsPercentage;
 
   return {
     essentials,
@@ -61,22 +71,16 @@ function calculateSavings(
   };
 }
 
-// Example usage:
 const years = 5;
-const biWeeklyPaycheck = 2000;
-
-const annualInterestRate = 2; //
-
-// Example usage:
-const inputAmount = 1000;
-const balance = calculateBalance(inputAmount);
 
 const Splitter = () => {
   const [essentials, setEssentials] = useState(0);
+  // const [riskFactor, setRiskFactor] = useState(0);
   const [wants, setWants] = useState(0);
   const [savings, setSavings] = useState(0);
   const [estimatedSavings, setEstimatedSavings] = useState(0);
-  const { setIncome, income } = useIncome();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const { setIncome, income, riskFactor, setRiskFactor } = useIncome();
   const { minimumBalance, setMinimumBalance } = useAccount();
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,21 +89,14 @@ const Splitter = () => {
   };
 
   useEffect(() => {
-    const balance = calculateBalance(income);
+    const balance = calculateBalance(income, riskFactor);
     setEssentials(balance.essentials);
     setWants(balance.wants);
     setSavings(balance.savings);
 
     const savings = calculateSavings(years, income, 0.2, 2);
     setEstimatedSavings(savings.totalSavings);
-  }, [income]);
-
-  const handleClickChangeIncome = () => {
-    const newIncome = prompt("Enter your income", income.toString());
-    if (newIncome) {
-      setIncome(Number(newIncome));
-    }
-  };
+  }, [income, riskFactor]);
 
   const addSavingsToMinimumBalance = () => {
     setMinimumBalance(minimumBalance + savings);
@@ -110,9 +107,31 @@ const Splitter = () => {
       title="Splitter"
       description="A useful 50/30/20 split of your paycheck."
     >
+      <SplitterModal
+        isOpen={showEditModal}
+        setOpen={setShowEditModal}
+        paycheckAmount={income}
+        riskFactor={riskFactor}
+        setPaycheckAmount={setIncome}
+        setRiskFactor={setRiskFactor}
+      />
+      {/* <div className="flex flex-col md:grid md:grid-cols-2 md:gap-4">
+        <input
+          type="range"
+          min="0"
+          max="0.25"
+          step="0.01"
+          onChange={(event) => {
+            console.log(event.target.value);
+            setRiskFactor(Number(event.target.value));
+          }}
+        />
+      </div> */}
       <div
         className="flex flex-col md:grid md:grid-cols-2 md:gap-4"
-        onClick={handleClickChangeIncome}
+        onClick={() => {
+          setShowEditModal(true);
+        }}
       >
         <div className="flex flex-row gap-2 ml-10 items-center cursor-pointer whitespace-nowrap ">
           Paycheck Amount: {formatter.format(income)}
@@ -190,54 +209,6 @@ const Splitter = () => {
         </Button>
         <Tooltip description="Add the suggested savings amount to your minimum balance." />
       </div>
-
-      {/* <div className="flex flex-col md:grid md:grid-cols-2 md:gap-4">
-        <div className="flex flex-col items-center">
-          <label htmlFor="input" className="text-2xl font-bold">
-            Paycheck Amount
-          </label>
-          <input
-            id="input"
-            type="number"
-            defaultValue={income}
-            className="text-md font-bold text-white text-right bg-slate-600"
-            onChange={handleInput}
-          />
-        </div>
-
-        <div className="flex flex-col items-center space-y-4">
-          <div className="flex flex-col items-center">
-            <label htmlFor="essentials" className="text-2xl font-bold">
-              Essentials
-            </label>
-            ${essentials}
-            (Monthly: ${(essentials * 2).toFixed(2)})
-          </div>
-
-          <div className="flex flex-col items-center">
-            <label htmlFor="wants" className="text-2xl font-bold">
-              Wants
-            </label>
-            ${wants.toFixed(2)}
-            (Monthly: ${(wants * 2).toFixed(2)})
-          </div>
-
-          <div className="flex flex-col items-center">
-            <label htmlFor="savings" className="text-2xl font-bold">
-              Savings
-            </label>
-            ${savings.toFixed(2)}
-            (Monthly: ${(savings * 2).toFixed(2)})
-          </div>
-
-          <div className="flex flex-col items-center">
-            <label htmlFor="estimatedSavings" className="text-2xl font-bold">
-              Estimated Savings, {years} years at {annualInterestRate}% interest
-            </label>
-            ${estimatedSavings.toFixed(2)}
-          </div>
-        </div>
-      </div> */}
     </Section>
   );
 };
