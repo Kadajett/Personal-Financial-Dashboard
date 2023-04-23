@@ -13,7 +13,7 @@ const Tooltip = ({
 }) => {
   return (
     <>
-      <TT id="tooltip" />
+      <TT id="tooltip" className="z-[10000] absolute" />
       <FontAwesomeIcon
         icon={icon || faCircleInfo}
         className="text-slate-200 tooltip"
