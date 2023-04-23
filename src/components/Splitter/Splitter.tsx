@@ -1,4 +1,9 @@
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "components/Button";
 import Section from "components/Section";
+import Tooltip from "components/Tooltip";
+import useAccount from "hooks/AccountProvider";
 import useIncome from "hooks/IncomeProvider";
 import { useEffect, useState } from "react";
 import { formatter } from "utils/numberFormatter";
@@ -65,10 +70,6 @@ const annualInterestRate = 2; //
 // Example usage:
 const inputAmount = 1000;
 const balance = calculateBalance(inputAmount);
-console.log(`For the input amount of ${inputAmount}, the balance is: 
-    Essentials: ${balance.essentials}, 
-    Wants: ${balance.wants}, 
-    Savings: ${balance.savings}`);
 
 const Splitter = () => {
   const [essentials, setEssentials] = useState(0);
@@ -76,6 +77,7 @@ const Splitter = () => {
   const [savings, setSavings] = useState(0);
   const [estimatedSavings, setEstimatedSavings] = useState(0);
   const { setIncome, income } = useIncome();
+  const { minimumBalance, setMinimumBalance } = useAccount();
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = Number(event.target.value);
@@ -99,14 +101,22 @@ const Splitter = () => {
     }
   };
 
+  const addSavingsToMinimumBalance = () => {
+    setMinimumBalance(minimumBalance + savings);
+  };
+
   return (
-    <Section title="Splitter">
+    <Section
+      title="Splitter"
+      description="A useful 50/30/20 split of your paycheck."
+    >
       <div
         className="flex flex-col md:grid md:grid-cols-2 md:gap-4"
         onClick={handleClickChangeIncome}
       >
-        <div className="flex flex-col ml-10 items-center cursor-pointer whitespace-nowrap">
+        <div className="flex flex-row gap-2 ml-10 items-center cursor-pointer whitespace-nowrap ">
           Paycheck Amount: {formatter.format(income)}
+          <FontAwesomeIcon icon={faEdit} className="text-slate-200 inline" />
         </div>
       </div>
 
@@ -152,6 +162,9 @@ const Splitter = () => {
             <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
               {formatter.format(wants)}
             </td>
+            <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
+              {formatter.format(wants * 2)}
+            </td>
           </tr>
           <tr>
             <td className="py-3.5 pl-4 pr-3 text-sm font-medium text-slate-200 sm:pl-0">
@@ -160,9 +173,23 @@ const Splitter = () => {
             <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
               {formatter.format(savings)}
             </td>
+            <td className="px-3 py-3.5 text-sm font-medium text-slate-200">
+              {formatter.format(savings * 2)}
+            </td>
           </tr>
         </tbody>
       </table>
+
+      <div className="flex flex-row gap-2 items-center mt-4">
+        <Button
+          onClick={addSavingsToMinimumBalance}
+          className="w-full"
+          disabled={savings === 0}
+        >
+          Add Savings to Minimum Balance
+        </Button>
+        <Tooltip description="Add the suggested savings amount to your minimum balance." />
+      </div>
 
       {/* <div className="flex flex-col md:grid md:grid-cols-2 md:gap-4">
         <div className="flex flex-col items-center">

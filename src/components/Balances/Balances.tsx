@@ -1,4 +1,5 @@
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "components/Button";
 import IconButton from "components/IconButton";
 import Section from "components/Section";
@@ -89,18 +90,20 @@ const Balances = () => {
         onClick={clickMinimumBalance}
       >
         Minimum Balance: {formatter.format(minimumBalance)}
-        <span
-          className={` p-0 ${
-            getDifferenceTotalFromMinimumBalance() < 0
-              ? "text-red-500"
-              : "text-green-500"
-          }`}
-        >
-          {getDifferenceTotalFromMinimumBalance() > 0 ? "+" : ""}
-          {formatter.format(getDifferenceTotalFromMinimumBalance())}
-        </span>
-        to spend
+        <FontAwesomeIcon icon={faEdit} className="text-slate-200 inline" />
       </div>
+      <div
+        className={` p-0 ${
+          getDifferenceTotalFromMinimumBalance() < 0
+            ? "text-red-500"
+            : "text-green-500"
+        }`}
+      >
+        {getDifferenceTotalFromMinimumBalance() > 0 ? "+" : ""}
+        {formatter.format(getDifferenceTotalFromMinimumBalance())}
+        {getDifferenceTotalFromMinimumBalance() < 0 ? " (over)" : ""}
+      </div>
+
       <table className="min-w-full divide-y divide-gray-300">
         <thead>
           <tr>
@@ -124,7 +127,7 @@ const Balances = () => {
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-gray-200 overflow-scroll h-5">
           {accounts.map((account) => (
             <tr key={account.name}>
               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-100 sm:pl-0">
@@ -153,7 +156,7 @@ const Balances = () => {
         </tbody>
       </table>
       <div className="flex justify-end">
-        <Button className="bg-slate-500 button" onClick={addAccount}>
+        <Button className="button" onClick={addAccount}>
           Add Account
         </Button>
       </div>

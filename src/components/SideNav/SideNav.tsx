@@ -122,7 +122,7 @@ export default function Example() {
                 alt=""
               />
               <span className="sr-only">Your profile</span>
-              <span aria-hidden="true">Jeremy Stover</span>
+              <span aria-hidden="true"></span>
             </a>
           </li>
         </ul>

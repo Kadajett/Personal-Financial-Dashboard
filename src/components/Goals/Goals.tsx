@@ -1,4 +1,5 @@
 import Section from "components/Section";
+import Tooltip from "components/Tooltip";
 import useIncome from "hooks/IncomeProvider";
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -13,17 +14,22 @@ const goals = [
   {
     name: "Emergency Fund",
     calculate: (income: number) => income * 12,
+    info: "6 months of expenses, based on your income",
   },
   {
     name: "Retirement",
     calculate: (income: number) => income * 12 * 30,
+    info: "30 years of expenses, based on your income",
   },
 ];
 
 const Goals = () => {
   const { income } = useIncome();
   return (
-    <Section title="Goals">
+    <Section
+      title="Goals"
+      description="Suggested savings values based on your income"
+    >
       <table className="min-w-full divide-y divide-gray-300">
         <thead>
           <tr>
@@ -39,6 +45,12 @@ const Goals = () => {
             >
               Goal Amount
             </th>
+            <th
+              scope="col"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-slate-200"
+            >
+              Info
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
@@ -49,6 +61,9 @@ const Goals = () => {
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-100">
                 {formatter.format(goal.calculate(income))}
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-100">
+                <Tooltip description={goal.info} />
               </td>
             </tr>
           ))}
