@@ -1,4 +1,5 @@
 import Balances from "components/Balances";
+import Calculator from "components/Calculator";
 import Goals from "components/Goals";
 import Splitter from "components/Splitter";
 import { Inter } from "next/font/google";
@@ -17,7 +18,9 @@ export default function Home() {
           </div>
           <div className="flex flex-col w-1/2 h-full">
             {/* <Section title="Assets">asdf</Section> */}
+
             <Balances />
+            <Calculator />
           </div>
         </div>
       </div>

@@ -1,6 +1,9 @@
+import classNames from "classnames";
 import Section from "components/Section";
-import Tooltip from "components/Tooltip";
 import useIncome from "hooks/IncomeProvider";
+import { useState } from "react";
+import ExpensesTab from "./ExpensesTab";
+
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -25,50 +28,93 @@ const goals = [
 
 const Goals = () => {
   const { income } = useIncome();
+  const [tabs, setTabs] = useState([
+    { name: "Long Term Savings", current: false },
+    { name: "Big Purchases", current: false },
+    { name: "Monthly Expenses", current: true, component: ExpensesTab },
+  ]);
+
+  const getCurrentTab = () => {
+    return tabs.find((tab) => tab.current);
+  };
   return (
     <Section
       title="Goals"
       description="Suggested savings values based on your income"
     >
-      <table className="min-w-full divide-y divide-gray-300">
-        <thead>
-          <tr>
-            <th
-              scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-200 sm:pl-0"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-slate-200"
-            >
-              Goal Amount
-            </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-slate-200"
-            >
-              Info
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {goals.map((goal) => (
-            <tr key={goal.name}>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-100 sm:pl-0">
-                {goal.name}
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-100">
-                {formatter.format(goal.calculate(income))}
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-100">
-                <Tooltip description={goal.info} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div>
+        <div className="sm:hidden">
+          <label htmlFor="tabs" className="sr-only">
+            Select a tab
+          </label>
+          {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
+          <select
+            id="tabs"
+            name="tabs"
+            className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+            defaultValue={tabs?.find?.((tab) => tab?.current)?.name}
+            onChange={(e: any) => {
+              const newTabs = tabs.map((tab) => {
+                if (tab.name === e.target.value) {
+                  return { ...tab, current: true };
+                } else {
+                  return { ...tab, current: false };
+                }
+              });
+              setTabs(newTabs);
+            }}
+          >
+            {tabs.map((tab) => (
+              <option
+                key={tab.name}
+                onClick={(e: any) => {
+                  const newTabs = tabs.map((tab) => {
+                    if (tab.name === e.target.value) {
+                      return { ...tab, current: true };
+                    } else {
+                      return { ...tab, current: false };
+                    }
+                  });
+                  setTabs(newTabs);
+                }}
+              >
+                {tab.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="hidden sm:block">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+              {tabs.map((tab) => (
+                <div
+                  key={tab.name}
+                  className={classNames(
+                    tab.current
+                      ? "border-indigo-500 text-indigo-300"
+                      : "border-transparent text-white hover:border-gray-300 hover:text-gray-200",
+                    "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium cursor-pointer transform transition ease-in-out duration-150"
+                  )}
+                  aria-current={tab.current ? "page" : undefined}
+                  onClick={() => {
+                    const newTabs = tabs.map((t) => {
+                      if (t.name === tab.name) {
+                        return { ...t, current: true };
+                      } else {
+                        return { ...t, current: false };
+                      }
+                    });
+                    setTabs(newTabs);
+                  }}
+                >
+                  {tab.name}
+                </div>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </div>
+      {getCurrentTab()?.component?.()}
     </Section>
   );
 };

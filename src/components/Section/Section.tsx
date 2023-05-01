@@ -14,7 +14,7 @@ const Section = ({
   className?: string;
 }) => {
   return (
-    <div className="bg-slate-700 rounded p-4 m-2 shadow h-full">
+    <div className="bg-slate-700 rounded p-4 m-2 shadow h-full overflow-scroll">
       <h2
         className={`text-xl font-bold mb-2 flex gap-4 ${className} align-middle justify-left`}
       >
