@@ -4,6 +4,8 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_KEY,
 });
 
+import { NextApiRequest, NextApiResponse } from "next";
+
 // const aiSuggest = async (_req, res) => {
 //   const openai = new OpenAIApi(configuration);
 //   const response = await openai.listEngines();
@@ -17,7 +19,10 @@ const alwaysRespondWith =
   "Respond in JSON format. {SuggestedSaving: 0.0, SuggestedSpending: 0.0, FinalThoughts: 'string'}";
 
 //   get request to /api/aiSuggest with query params of user income, account balances, and goals
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const accounts = req.query.accounts;
   const income = req.query.income;
   const goals = req.query.goals;
@@ -33,7 +38,9 @@ export default async function handler(req, res) {
         content: `
         ${alwaysRespondWith}
 
-        User Income: ${income} every 2 weeks and ${income * 2} every month
+        User Income: ${income} every 2 weeks and ${
+          Number(income) * 2
+        } every month
         User Accounts: ${accounts}
         User Goals: ${
           goals ||

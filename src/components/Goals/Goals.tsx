@@ -53,7 +53,7 @@ const Goals = () => {
             name="tabs"
             className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
             defaultValue={tabs?.find?.((tab) => tab?.current)?.name}
-            onChange={(e) => {
+            onChange={(e: any) => {
               const newTabs = tabs.map((tab) => {
                 if (tab.name === e.target.value) {
                   return { ...tab, current: true };
@@ -67,7 +67,7 @@ const Goals = () => {
             {tabs.map((tab) => (
               <option
                 key={tab.name}
-                onClick={() => {
+                onClick={(e: any) => {
                   const newTabs = tabs.map((tab) => {
                     if (tab.name === e.target.value) {
                       return { ...tab, current: true };
