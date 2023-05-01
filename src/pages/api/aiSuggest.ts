@@ -16,32 +16,33 @@ import { NextApiRequest, NextApiResponse } from "next";
 // export default aiSuggest;
 
 const alwaysRespondWith =
-  "Respond in JSON format. {SuggestedSaving: 0.0, SuggestedSpending: 0.0, FinalThoughts: 'string'}";
+  "Respond in JSON format. Make sure Suggested Saving and suggested Income always equal the total monthly income {SuggestedSaving: 0.0, SuggestedSpending: 0.0, FinalThoughts: 'string', MonthlyIncome: 0.0}";
 
 //   get request to /api/aiSuggest with query params of user income, account balances, and goals
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
-) {
+): Promise<NextApiResponse | void> {
   const accounts = req.query.accounts;
-  const income = req.query.income;
+  const income = Number(req.query.income);
   const goals = req.query.goals;
   const expenses = req.query.expenses;
+  let completion;
 
   const openai = new OpenAIApi(configuration);
-
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "user",
-        content: `
+  try {
+    completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: `
         ${alwaysRespondWith}
 
-        User Income: ${income} every 2 weeks and ${
-          Number(income) * 2
-        } every month
+        User Income: ${income} every 2 weeks and ${income * 2} every month
+
         User Accounts: ${accounts}
+
         User Goals: ${
           goals ||
           "We would like to buy our first used car. After that we want to save for a house, and a child"
@@ -52,9 +53,12 @@ export default async function handler(
         Can you give recommendations on how to save and spend?
         
     `,
-      },
-    ],
-  });
-  console.log(completion.data);
-  res.status(200).json(completion.data);
+        },
+      ],
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(completion?.data);
+  res.status(200).json(completion?.data);
 }
