@@ -15,7 +15,6 @@ const Calculator = () => {
   const [suggestedSavings, setSuggestedSavings] = useState(0);
   const [suggestedSpending, setSuggestedSpending] = useState(0);
 
-  console.log(income);
   const { recommendationRequest } = useAI({
     accounts,
     income,
@@ -23,33 +22,12 @@ const Calculator = () => {
     goal: "",
   });
 
-  const handleClick = (e) => {
-    setInput(input + e.target.value);
-  };
-
-  const getRecomendation = async () => {};
-
-  const calculate = (num) => {
-    try {
-      setResult(eval(num));
-    } catch (e) {
-      setResult("Error");
-    }
-  };
-
-  const clear = () => {
-    setInput("");
-    setResult("");
-  };
-
   useEffect(() => {
     if (input) {
     } else {
       setResult("");
     }
   }, [input]);
-
-  console.log(recommendationRequest.data);
 
   return (
     <Section title="Penni Bot 🤖">
